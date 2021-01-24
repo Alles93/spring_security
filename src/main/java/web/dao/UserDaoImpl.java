@@ -1,60 +1,60 @@
 package web.dao;
 
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.hibernate.Session;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import web.model.Role;
 import web.model.User;
 
-
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
+
+
 @Repository
 @Transactional
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl implements UserDao{
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    @PersistenceContext
+    private EntityManager entityManager;
 
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<User> getAllUsers() {
-        return sessionFactory.getCurrentSession().createQuery("from User").getResultList();
+        return entityManager.unwrap(Session.class).createQuery("from User", User.class).getResultList();
+
     }
 
     @Override
     public User getUserById(Long id) {
-        return sessionFactory.getCurrentSession().createQuery("from User where id = '" + id + "'", User.class).getSingleResult();
+        return entityManager.find(User.class, id);
     }
 
     @Override
     public void updateUser(User user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        sessionFactory.getCurrentSession().saveOrUpdate(user);
+        entityManager.merge(user);
+        System.out.println("Пользователь обновлен!");
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public void saveUser(User user) {
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        entityManager.merge(user);
+        System.out.println("Пользователь создан!");
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
         User user = getUserById(id);
-        sessionFactory.getCurrentSession().delete(user);
+        entityManager.remove(user);
+        System.out.println("Пользователь удален " + id);
     }
 
     @Override
     public User getUserByName(String username) {
-        return sessionFactory.getCurrentSession().createQuery("from User where username = '" + username + "'", User.class).getSingleResult();
-    }
-
-    @Override
-    public Role getRoleByName(String name) {
-
-        return sessionFactory.getCurrentSession().createQuery("from Role where name = '" + name + "'", Role.class).getSingleResult();
-    }
-
-    @Override
-    public void addRole(Role role) {
-        sessionFactory.getCurrentSession().save(role);
+        return entityManager.unwrap(Session.class).createQuery("from User where username = '" + username + "'", User.class).getSingleResult();
     }
 
 }

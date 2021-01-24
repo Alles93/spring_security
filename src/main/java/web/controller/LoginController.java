@@ -1,3 +1,4 @@
+/*
 package web.controller;
 
 import org.springframework.stereotype.Controller;
@@ -20,4 +21,4 @@ public class LoginController {
         return "loginPage";
     }
 
-}
+}*/

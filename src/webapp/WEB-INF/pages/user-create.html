@@ -5,7 +5,6 @@
     <title>Add User</title>
 </head>
 <body>
-<body>
 <div th:align="right">
     Your login is: <b th:inline="text"> [[${#httpServletRequest.remoteUser}]] </b>
     <form th:action="@{/logout}" method="POST">
@@ -15,7 +14,7 @@
 <br>
 <br>
 <div align="center">
-    <form action="new" method="post">
+    <form action="user-create" method="post">
         <caption>
             <h2>
                 Add New User
@@ -46,7 +45,7 @@
                     <label>User Role</label>
                 </td>
                 <td>
-                    <select multiple size="2" name="role" >
+                    <select multiple size="2" name="roles" >
                         <option value="ROLE_ADMIN">ROLE_ADMIN</option>
                         <option selected="selected" value="ROLE_USER">ROLE_USER</option>
                     </select>

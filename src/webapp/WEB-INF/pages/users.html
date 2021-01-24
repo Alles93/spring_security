@@ -30,9 +30,9 @@
                 <td th:text="${users.password}"></td>
                 <td th:text="${users.roles}"></td>
                 <td>
-                    <a th:href="@{edit(id=${users.id})}">Edit</a>
+                    <a th:href="@{user-edit(id=${users.id})}">Edit</a>
                     &nbsp;&nbsp;&nbsp;
-                    <a th:href="@{delete(id=${users.id})}">Delete</a>
+                    <a th:href="@{user-delete(id=${users.id})}">Delete</a>
                 </td>
             </tr>
         </th:block>
@@ -40,7 +40,7 @@
     </table>
     <br>
     <form>
-        <button formaction="newUser">
+        <button formaction="user-create">
             Add New User
         </button>
     </form>
