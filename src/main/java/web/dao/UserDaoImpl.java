@@ -28,27 +28,27 @@ public class UserDaoImpl implements UserDao{
 
     @Override
     public User getUserById(Long id) {
-        return entityManager.find(User.class, id);
+        return entityManager.unwrap(Session.class).createQuery("from User where id = '" + id + "'", User.class).getSingleResult();
     }
 
     @Override
     public void updateUser(User user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        entityManager.merge(user);
+        entityManager.unwrap(Session.class).saveOrUpdate(user);
         System.out.println("Пользователь обновлен!");
     }
 
     @Override
     public void saveUser(User user) {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        entityManager.merge(user);
+        entityManager.unwrap(Session.class).saveOrUpdate(user);
         System.out.println("Пользователь создан!");
     }
 
     @Override
     public void deleteUserById(Long id) {
         User user = getUserById(id);
-        entityManager.remove(user);
+        entityManager.unwrap(Session.class).delete(user);
         System.out.println("Пользователь удален " + id);
     }
 

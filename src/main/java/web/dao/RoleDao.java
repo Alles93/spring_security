@@ -6,4 +6,5 @@ public interface RoleDao {
     Role getRoleByName (String name);
     Role getRoleById(Long id);
     void createRoles (String roleName);
+    void deleteRoleById(Long id);
 }
