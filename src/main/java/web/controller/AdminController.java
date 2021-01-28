@@ -28,12 +28,12 @@ public class AdminController {
 
     private User user;
 
+
     @GetMapping(value = "users")
     public String getUsers(ModelMap model) {
         model.addAttribute("users", userService.getAllUsers());
         return "users";
     }
-
 
     @GetMapping(value = "user-create")
     public String createUserForm(User user) {
@@ -41,24 +41,24 @@ public class AdminController {
     }
 
     @PostMapping(value = "user-create")
-    public String createUser(User user)   {
+    public String createUser(User user) {
         Set<Role> roleSet = new HashSet<>();
         for (Role roles : user.getRoles()) {
             roleSet.add(roleService.getRoleByName(String.valueOf(roles)));
         }
-        userService.saveUser(new User(user.getUsername(),user.getPassword(),roleSet));
+        userService.saveUser(new User(user.getUsername(), user.getPassword(), roleSet));
         return "redirect:users";
     }
 
 
     @GetMapping("user-edit")
-    public String editUserForm(Long id, ModelMap model){
+    public String editUserForm(Long id, ModelMap model) {
         model.addAttribute("user", userService.getUserById(id));
         return "user-edit";
     }
 
     @PostMapping("user-edit")
-    public String editUser(User user){
+    public String editUser(User user) {
         Set<Role> roleSetForEdit = new HashSet<>();
         for (Role roles : user.getRoles()) {
             roleSetForEdit.add(roleService.getRoleByName(String.valueOf(roles)));

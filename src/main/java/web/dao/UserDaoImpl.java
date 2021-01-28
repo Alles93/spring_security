@@ -1,20 +1,19 @@
 package web.dao;
 
 
-import org.hibernate.Session;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import web.model.User;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
 
 @Repository
 @Transactional
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl implements UserDao {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -22,39 +21,43 @@ public class UserDaoImpl implements UserDao{
 
     @Override
     public List<User> getAllUsers() {
-        return entityManager.unwrap(Session.class).createQuery("from User", User.class).getResultList();
-
+        return entityManager.createQuery("from User", User.class).getResultList();
     }
 
     @Override
     public User getUserById(Long id) {
-        return entityManager.unwrap(Session.class).createQuery("from User where id = '" + id + "'", User.class).getSingleResult();
+        return entityManager.find(User.class, id);
     }
 
     @Override
     public void updateUser(User user) {
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        entityManager.unwrap(Session.class).saveOrUpdate(user);
+        entityManager.merge(user);
         System.out.println("Пользователь обновлен!");
     }
 
     @Override
     public void saveUser(User user) {
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        entityManager.unwrap(Session.class).saveOrUpdate(user);
+        entityManager.merge(user);
         System.out.println("Пользователь создан!");
     }
 
     @Override
     public void deleteUserById(Long id) {
         User user = getUserById(id);
-        entityManager.unwrap(Session.class).delete(user);
+        entityManager.remove(user);
         System.out.println("Пользователь удален " + id);
     }
 
     @Override
     public User getUserByName(String username) {
-        return entityManager.unwrap(Session.class).createQuery("from User where username = '" + username + "'", User.class).getSingleResult();
-    }
+        try {
+        User user = (User) entityManager.createQuery("select u from User u where u.username=:username")
+                .setParameter("username", username)
+                .getSingleResult();
+            return user;
+        } catch (NoResultException ex) {
+            return null;
+        }
 
+    }
 }

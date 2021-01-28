@@ -1,6 +1,5 @@
 package web.dao;
 
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import web.model.Role;
@@ -23,12 +22,15 @@ public class RoleDaoImpl implements RoleDao{
     }
 
     public Role getRoleByName(String name) {
-        return entityManager.unwrap(Session.class).createQuery("from Role where name = '" + name + "'", Role.class).getSingleResult();
+        return (Role) entityManager.createQuery("select u from Role u where u.name=:name")
+                .setParameter("name", name)
+                .getSingleResult();
+        //return entityManager.unwrap(Session.class).createQuery("from Role where name = '" + name + "'", Role.class).getSingleResult();
     }
 
 
     public Role getRoleById(Long id) {
-        return entityManager.unwrap(Session.class).createQuery("from Role where id = '" + id + "'", Role.class).getSingleResult();
+        return entityManager.find(Role.class, id);
     }
 
     public void createRoles(String roleName) {
