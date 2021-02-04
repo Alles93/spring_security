@@ -1,7 +1,6 @@
 package web.security.service;
 
 
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,11 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         System.out.println("Load user by username:" + " " + username);
         User user = userDao.getUserByName(username);
         if (user == null) {
-            try {
-                throw new Exception("User '" + username + "' not found ");
-            } catch (Exception e) {
-                throw new BadCredentialsException(e.getLocalizedMessage(), e);
-            }
+            throw new UsernameNotFoundException("User '" + username + "' not found ");
         }
         return user;
     }

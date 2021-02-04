@@ -25,7 +25,6 @@ public class RoleDaoImpl implements RoleDao{
         return (Role) entityManager.createQuery("select u from Role u where u.name=:name")
                 .setParameter("name", name)
                 .getSingleResult();
-        //return entityManager.unwrap(Session.class).createQuery("from Role where name = '" + name + "'", Role.class).getSingleResult();
     }
 
 
